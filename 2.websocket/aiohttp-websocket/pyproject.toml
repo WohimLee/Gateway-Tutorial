@@ -1,0 +1,8 @@
+[project]
+name = "aiohttp-websocket"
+version = "0.1.0"
+description = "Aiohttp WebSocket examples that mimic OpenClaw Gateway frames"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.12.0",
+]
