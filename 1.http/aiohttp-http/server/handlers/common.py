@@ -17,21 +17,21 @@ MOCK_SESSIONS: dict[str, list[dict[str, Any]]] = {
             "role": "user",
             "content": [{"type": "text", "text": "hello gateway"}],
             "timestamp": 1_737_264_000_000,
-            "__wigainneo": {"id": "msg-user-1", "seq": 1},
+            "__openclaw": {"id": "msg-user-1", "seq": 1},
         },
         {
             "role": "assistant",
-            "content": [{"type": "text", "text": "hello from mock WigainNeo gateway"}],
+            "content": [{"type": "text", "text": "hello from mock OpenClaw gateway"}],
             "timestamp": 1_737_264_001_000,
-            "__wigainneo": {"id": "msg-assistant-1", "seq": 2},
+            "__openclaw": {"id": "msg-assistant-1", "seq": 2},
         },
     ]
 }
 
 MOCK_MODELS = [
-    "wigainneo",
-    "wigainneo/default",
-    "wigainneo/coder",
+    "openclaw",
+    "openclaw/default",
+    "openclaw/coder",
 ]
 
 
@@ -72,7 +72,7 @@ def session_snapshot(session_key: str) -> dict[str, Any]:
             "displayName": "Mock Gateway Tutorial",
             "updatedAt": now_ms(),
             "status": "idle",
-            "model": "wigainneo/default",
+            "model": "openclaw/default",
             "modelProvider": "mock",
         },
         "sessionId": f"mock-session-{session_key}",

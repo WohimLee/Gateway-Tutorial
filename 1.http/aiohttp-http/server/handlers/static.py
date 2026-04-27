@@ -3,7 +3,14 @@ from __future__ import annotations
 from aiohttp import web
 
 
+def missing_static_asset(request: web.Request) -> bool:
+    tail = request.match_info.get("tail", "")
+    return tail in {"missing.js", "missing.css", "not-found.png"}
+
+
 async def a2ui_static(request: web.Request) -> web.Response:
+    if missing_static_asset(request):
+        raise web.HTTPNotFound(text="static asset not found", content_type="text/plain")
     return web.Response(
         text="""
 <!doctype html>
@@ -17,6 +24,8 @@ async def a2ui_static(request: web.Request) -> web.Response:
 
 
 async def canvas_static(request: web.Request) -> web.Response:
+    if missing_static_asset(request):
+        raise web.HTTPNotFound(text="static asset not found", content_type="text/plain")
     return web.Response(
         text="""
 <!doctype html>
@@ -30,6 +39,8 @@ async def canvas_static(request: web.Request) -> web.Response:
 
 
 async def control_ui_static(request: web.Request) -> web.Response:
+    if missing_static_asset(request):
+        raise web.HTTPNotFound(text="static asset not found", content_type="text/plain")
     return web.Response(
         text="""
 <!doctype html>

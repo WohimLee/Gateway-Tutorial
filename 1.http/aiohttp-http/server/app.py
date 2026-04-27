@@ -60,10 +60,10 @@ def create_app() -> web.Application:
     app.router.add_post("/v1/embeddings", embeddings)
 
     # Static resource endpoints.
-    app.router.add_get("/__wigainneo__/a2ui", a2ui_static, allow_head=True)
-    app.router.add_get("/__wigainneo__/a2ui/{tail:.*}", a2ui_static, allow_head=True)
-    app.router.add_get("/__wigainneo__/canvas", canvas_static, allow_head=True)
-    app.router.add_get("/__wigainneo__/canvas/{tail:.*}", canvas_static, allow_head=True)
+    app.router.add_get("/__openclaw__/a2ui", a2ui_static, allow_head=True)
+    app.router.add_get("/__openclaw__/a2ui/{tail:.*}", a2ui_static, allow_head=True)
+    app.router.add_get("/__openclaw__/canvas", canvas_static, allow_head=True)
+    app.router.add_get("/__openclaw__/canvas/{tail:.*}", canvas_static, allow_head=True)
     app.router.add_get("/control/{tail:.*}", control_ui_static, allow_head=True)
     app.router.add_get("/control", control_ui_static, allow_head=True)
 

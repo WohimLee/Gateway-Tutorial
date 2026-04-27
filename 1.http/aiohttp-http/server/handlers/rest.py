@@ -44,7 +44,7 @@ async def invoke_tool(request: web.Request) -> web.Response:
                 "args": args,
                 "sessionKey": body.get("sessionKey", "main"),
                 "dryRun": bool(body.get("dryRun")),
-                "content": f"mock result from WigainNeo tool '{tool}'",
+                "content": f"mock result from OpenClaw tool '{tool}'",
             },
         }
     )
@@ -53,6 +53,11 @@ async def invoke_tool(request: web.Request) -> web.Response:
 async def kill_session(request: web.Request) -> web.Response:
     session_key = request.match_info["sessionKey"]
     existed = session_key in MOCK_SESSIONS
+    if not existed:
+        raise web.HTTPNotFound(
+            text=json.dumps(error_body("not_found", f"Session not found: {session_key}")),
+            content_type="application/json",
+        )
     return web.json_response(
         {
             "ok": True,
@@ -73,6 +78,11 @@ async def hook_wake(request: web.Request) -> web.Response:
 
 async def hook_agent(request: web.Request) -> web.Response:
     body = await read_json(request)
+    if not body.get("message"):
+        raise web.HTTPBadRequest(
+            text=json.dumps(error_body("invalid_request", "hook agent requires body.message")),
+            content_type="application/json",
+        )
     return web.json_response(
         {
             "ok": True,
@@ -93,6 +103,11 @@ async def hook_mapping(request: web.Request) -> web.Response:
 
 async def mattermost_command(request: web.Request) -> web.Response:
     body = await read_json(request)
+    if not body.get("text"):
+        raise web.HTTPBadRequest(
+            text=json.dumps(error_body("invalid_request", "mattermost command requires body.text")),
+            content_type="application/json",
+        )
     return web.json_response(
         {
             "ok": True,

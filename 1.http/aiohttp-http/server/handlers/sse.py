@@ -6,11 +6,16 @@ from typing import Any
 
 from aiohttp import web
 
-from .common import MOCK_SESSIONS, now_ms, session_snapshot
+from .common import MOCK_SESSIONS, error_body, now_ms, session_snapshot
 
 
 async def session_history(request: web.Request) -> web.StreamResponse:
     session_key = request.match_info["sessionKey"]
+    if session_key not in MOCK_SESSIONS:
+        raise web.HTTPNotFound(
+            text=json.dumps(error_body("not_found", f"Session not found: {session_key}")),
+            content_type="application/json",
+        )
     messages = MOCK_SESSIONS.get(session_key, [])
     payload = {
         "sessionKey": session_key,
@@ -44,7 +49,7 @@ async def session_history(request: web.Request) -> web.StreamResponse:
                 "role": "assistant",
                 "content": [{"type": "text", "text": "mock streaming history update"}],
                 "timestamp": now_ms(),
-                "__wigainneo": {"id": "msg-stream-1", "seq": len(messages) + 1},
+                "__openclaw": {"id": "msg-stream-1", "seq": len(messages) + 1},
             },
             "messageId": "msg-stream-1",
             "messageSeq": len(messages) + 1,

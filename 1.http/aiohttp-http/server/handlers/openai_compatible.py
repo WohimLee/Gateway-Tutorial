@@ -11,12 +11,19 @@ from aiohttp import web
 from .common import MOCK_MODELS, openai_error, read_json
 
 
+def raise_openai_bad_request(message: str) -> None:
+    raise web.HTTPBadRequest(
+        text=json.dumps(openai_error(message)),
+        content_type="application/json",
+    )
+
+
 def openai_model(model_id: str) -> dict[str, Any]:
     return {
         "id": model_id,
         "object": "model",
         "created": 0,
-        "owned_by": "wigainneo",
+        "owned_by": "openclaw",
         "permission": [],
     }
 
@@ -42,8 +49,10 @@ async def retrieve_model(request: web.Request) -> web.Response:
 
 async def chat_completions(request: web.Request) -> web.Response:
     body = await read_json(request)
-    model = body.get("model") or "wigainneo/default"
+    model = body.get("model") or "openclaw/default"
     messages = body.get("messages") if isinstance(body.get("messages"), list) else []
+    if not messages:
+        raise_openai_bad_request("'messages' is required and must be a non-empty array.")
     last_user = next(
         (
             msg.get("content")
@@ -75,6 +84,8 @@ async def chat_completions(request: web.Request) -> web.Response:
 
 async def responses(request: web.Request) -> web.Response:
     body = await read_json(request)
+    if "input" not in body:
+        raise_openai_bad_request("'input' is required.")
     user_input = body.get("input", "")
     response_id = f"resp_{uuid.uuid4()}"
     output_id = f"msg_{uuid.uuid4()}"
@@ -84,7 +95,7 @@ async def responses(request: web.Request) -> web.Response:
             "object": "response",
             "created_at": int(time.time()),
             "status": "completed",
-            "model": body.get("model", "wigainneo/default"),
+            "model": body.get("model", "openclaw/default"),
             "output": [
                 {
                     "type": "message",
@@ -106,6 +117,8 @@ async def responses(request: web.Request) -> web.Response:
 
 async def embeddings(request: web.Request) -> web.Response:
     body = await read_json(request)
+    if "input" not in body:
+        raise_openai_bad_request("'input' is required.")
     raw_input = body.get("input", "")
     inputs = raw_input if isinstance(raw_input, list) else [raw_input]
     return web.json_response(
@@ -119,7 +132,7 @@ async def embeddings(request: web.Request) -> web.Response:
                 }
                 for index, _ in enumerate(inputs)
             ],
-            "model": body.get("model", "wigainneo/default"),
+            "model": body.get("model", "openclaw/default"),
             "usage": {"prompt_tokens": 0, "total_tokens": 0},
         }
     )
