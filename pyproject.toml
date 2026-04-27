@@ -4,4 +4,13 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "aiohttp>=3.12.0",
+    "pydantic>=2.0.0",
+]
+
+[tool.uv.workspace]
+members = [
+    "1.http/aiohttp-http",
+    "1.http/asgi-http",
+]

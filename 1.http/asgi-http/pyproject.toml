@@ -1,0 +1,6 @@
+[project]
+name = "asgi-http"
+version = "0.1.0"
+description = "ASGI HTTP examples"
+requires-python = ">=3.12"
+dependencies = []
